@@ -19,11 +19,11 @@ type DbModel struct {
 func main() {
 	const (
 		dbType   string = "mysql"
-		dbHost   string = "mike.jabingp.cn"
+		dbHost   string = "***"
 		dbPort   string = "3306"
 		dbName   string = "demo"
-		dbUser   string = "root"
-		dbPasswd string = "zhibinNB6"
+		dbUser   string = "***"
+		dbPasswd string = "***"
 	)
 
 	// set log prefix
