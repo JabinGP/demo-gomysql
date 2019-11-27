@@ -12,7 +12,7 @@ import (
 
 // DbModel database table model
 type DbModel struct {
-	ID    int
+	gorm.Model
 	Title string
 }
 
@@ -24,13 +24,14 @@ func main() {
 		dbName   string = "demo"
 		dbUser   string = "***"
 		dbPasswd string = "***"
+		dbParams string = "parseTime=true"
 	)
 
 	// set log prefix
 	log.SetPrefix("func-main")
 
 	// connect database
-	var dbURL = fmt.Sprintf("%s:%s@(%s:%s)/%s", dbUser, dbPasswd, dbHost, dbPort, dbName)
+	var dbURL = fmt.Sprintf("%s:%s@(%s:%s)/%s?%s", dbUser, dbPasswd, dbHost, dbPort, dbName, dbParams)
 	db, err := gorm.Open(dbType, dbURL)
 	if err != nil {
 		log.Printf("Open mysql failed,err:%v\n", err)
@@ -42,8 +43,8 @@ func main() {
 	db.AutoMigrate(&DbModel{})
 
 	// create
-	db.Create(&DbModel{ID: 0, Title: "using gorm creat 1"})
-	db.Create(&DbModel{ID: 0, Title: "using gorm creat 2"})
+	db.Create(&DbModel{Title: "using gorm creat 1"})
+	db.Create(&DbModel{Title: "using gorm creat 2"})
 
 	// read
 	var dbData1, dbData2 DbModel
@@ -72,9 +73,17 @@ func main() {
 		log.Println(string(jsonString))
 	}
 
-	// delete
+	// delete part
 	db.Delete(&dbData2)
-	log.Println("-----after delete-----")
+	log.Println("-----after delete part-----")
+	db.Find(&dbDataList) // find all
+	if jsonString, err := json.Marshal(dbDataList); err == nil {
+		log.Println(string(jsonString))
+	}
+
+	// delete all
+	db.Delete(&DbModel{})
+	log.Println("-----after delete all-----")
 	db.Find(&dbDataList) // find all
 	if jsonString, err := json.Marshal(dbDataList); err == nil {
 		log.Println(string(jsonString))
