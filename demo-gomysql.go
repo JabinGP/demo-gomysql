@@ -24,7 +24,7 @@ func main() {
 		dbName   string = "demo"
 		dbUser   string = "***"
 		dbPasswd string = "***"
-		dbParams string = "parseTime=true"
+		dbParams string = "charset=uft8&parseTime=true"
 	)
 
 	// set log prefix
