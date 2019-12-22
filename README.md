@@ -6,6 +6,7 @@ go 语言使用 mysql 示例，这是默认分支，使用xorm操作数据库，
 
 ```cmd
 git clone https://github.com/JabinGP/demo-gomysql.git
+cd demo-gomysql
 go run main.go
 ```
 
