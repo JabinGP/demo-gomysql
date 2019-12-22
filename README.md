@@ -6,11 +6,20 @@ go 语言使用 mysql 示例
 
 ```cmd
 git clone https://github.com/JabinGP/demo-gomysql.git
+cd demo-gomysql
 git checkout gorm
 go run main.go
 ```
 
 ## go 1.12 以下
+
+### 获取代码
+
+```cmd
+git clone https://github.com/JabinGP/demo-gomysql.git
+cd demo-gomysql
+git checkout gorm
+```
 
 ### 引入 mysql 驱动
 
