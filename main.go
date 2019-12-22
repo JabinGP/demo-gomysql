@@ -24,14 +24,11 @@ func main() {
 		dbName   string = "demo"
 		dbUser   string = "***"
 		dbPasswd string = "***"
-		dbParams string = "charset=uft8&parseTime=true"
+		dbParams string = "charset=utf8&parseTime=true"
 	)
-
-	// set log prefix
-	log.SetPrefix("func-main")
-
-	// connect database
 	var dbURL = fmt.Sprintf("%s:%s@(%s:%s)/%s?%s", dbUser, dbPasswd, dbHost, dbPort, dbName, dbParams)
+
+	//  connect database
 	db, err := gorm.Open(dbType, dbURL)
 	if err != nil {
 		log.Printf("Open mysql failed,err:%v\n", err)
