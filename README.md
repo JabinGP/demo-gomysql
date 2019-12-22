@@ -12,6 +12,13 @@ go run main.go
 
 ## go 1.12 以下
 
+### 获取代码
+
+```cmd
+git clone https://github.com/JabinGP/demo-gomysql.git
+cd demo-gomysql
+```
+
 ### 引入 mysql 驱动
 
 ```cmd
