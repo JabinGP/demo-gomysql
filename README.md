@@ -1,6 +1,6 @@
 # demo-gomysql
 
-go 语言使用 mysql 示例
+go 语言使用 mysql 示例，这是默认分支，使用xorm操作数据库，在gorm分支有使用gorm的示例。
 
 ## go 1.12 以及以上
 
