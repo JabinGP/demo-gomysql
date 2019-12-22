@@ -32,7 +32,7 @@ func main() {
 	var dbURL = fmt.Sprintf("%s:%s@(%s:%s)/%s?%s", dbUser, dbPasswd, dbHost, dbPort, dbName, dbParams)
 
 	// 创建一个引擎，对于xorm，一个引擎对应一个数据库
-	// 但是创建引擎时不会检查连接有效性，只是简单讲配置文件解析为xorm数据结构
+	// 但是创建引擎时不会检查连接有效性，只是解析为xorm数据结构
 	// 当执行的操作需要用到连接时，xorm才会发现错误并返回错误
 	engine, err := xorm.NewEngine(dbType, dbURL)
 	if err != nil {
@@ -108,14 +108,14 @@ func C(engine *xorm.Engine) {
 	log.Printf("插入数据成功，影响行数:%v\n，插入数据为%v\n", affected, newMsg2)
 
 	// 增，使用数组插入多条记录，且每条记录都可以获取到主键
-	// 注意需要传入的是数组解构后的指针，如果传入的不是指针将无法获取主键
+	// 注意需要传入的是指针，如果传入的不是指针将无法获取主键
 	msgList := make([]*DbModel2, 2)
 	msgList[0] = new(DbModel2)
 	msgList[0].Title = "list 1"
 	msgList[1] = new(DbModel2)
 	msgList[1].Title = "list 2"
 
-	// 此处官方有误，这样无法把msgList...解构传递过去，会报错
+	// 此处不知道是官方有误还是怎么的，无法把msgList...解构传递过去，会报错
 	// cannot use msgList (variable of type []*DbModel2) as []interface{}
 	// affected, err = engine.Insert(msgList...)
 	// 只能这样
@@ -166,7 +166,7 @@ func U(engine *xorm.Engine) {
 	// Update会自动从user结构体中提取非零值和非nil得值作为需要更新的内容
 	// 因此，如果需要更新一个值为零值，则此种方法将无法实现
 	// 并且当没有修改任何值的时候，xorm也会自动更新updated的时间
-	// 从而使得返回的影响行数不为零值
+	// 从而导致返回的影响行数不会为0
 	affected, err := engine.Id(3).Update(&updateMsg1)
 	if err != nil {
 		log.Println(err)
