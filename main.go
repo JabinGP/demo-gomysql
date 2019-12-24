@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -8,6 +9,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/core"
 	"xorm.io/xorm"
+)
+
+// 数据库配置文件
+const (
+	dbType   string = "mysql"
+	dbHost   string = "***"
+	dbPort   string = "3306"
+	dbName   string = "demo"
+	dbUser   string = "***"
+	dbPasswd string = "***"
+	dbParams string = "charset=utf8&parseTime=true"
 )
 
 // DbModel2 数据库表db_model2对应的模型
@@ -20,20 +32,10 @@ type DbModel2 struct {
 }
 
 func main() {
-	const (
-		dbType   string = "mysql"
-		dbHost   string = "***"
-		dbPort   string = "3306"
-		dbName   string = "demo"
-		dbUser   string = "***"
-		dbPasswd string = "***"
-		dbParams string = "charset=utf8&parseTime=true"
-	)
-	var dbURL = fmt.Sprintf("%s:%s@(%s:%s)/%s?%s", dbUser, dbPasswd, dbHost, dbPort, dbName, dbParams)
-
 	// 创建一个引擎，对于xorm，一个引擎对应一个数据库
 	// 但是创建引擎时不会检查连接有效性，只是解析为xorm数据结构
 	// 当执行的操作需要用到连接时，xorm才会发现错误并返回错误
+	dbURL := fmt.Sprintf("%s:%s@(%s:%s)/%s?%s", dbUser, dbPasswd, dbHost, dbPort, dbName, dbParams)
 	engine, err := xorm.NewEngine(dbType, dbURL)
 	if err != nil {
 		log.Printf("打开mysql失败:%v\n", err)
@@ -47,16 +49,8 @@ func main() {
 	R(engine)
 	U(engine)
 	D(engine)
-
-	// 获取表结构信息，通过调用engine.DBMetas()可以获取到数据库中所有的表，字段，索引的信息
-	// dbMetas, err := engine.DBMetas()
-	// if err != nil {
-	// 	log.Printf("获取数据库表信息失败:%v\n", err)
-	// 	panic(err)
-	// }
-	// log.Printf("获取数据库表信息成功")
-	// jsonSring, _ := json.Marshal(dbMetas)
-	// log.Println(string(jsonSring)
+	ExecSQL(engine)
+	//GetDBInfo(engine)
 }
 
 // SyncTable 自动同步数据库字段和结构体字段（根据结构体字段创建表或添加表的字段）
@@ -237,4 +231,34 @@ func D(engine *xorm.Engine) {
 	// 	panic(err)
 	// }
 	// log.Printf("删除成功，影响%v行", affected)
+}
+
+// ExecSQL 执行纯sql，不通过ORM操作数据库，适合多表查询
+func ExecSQL(engine *xorm.Engine) {
+	var msgList []DbModel2
+	err := engine.SQL("select * from db_model2 where db_title like ?", "%message%").Find(&msgList)
+	if err != nil {
+		log.Printf("执行SQL失败：%v", err)
+		panic(err)
+	}
+	log.Printf("执行SQL成功")
+	PrintJSON(msgList)
+}
+
+// GetDBInfo 获取表结构信息，通过调用engine.DBMetas()可以获取到数据库中所有的表，字段，索引的信息
+func GetDBInfo(engine *xorm.Engine) {
+	dbMetas, err := engine.DBMetas()
+	if err != nil {
+		log.Printf("获取数据库表信息失败:%v\n", err)
+		panic(err)
+	}
+	log.Printf("获取数据库表信息成功")
+	jsonSring, _ := json.Marshal(dbMetas)
+	log.Println(string(jsonSring))
+}
+
+// PrintJSON 打印JSON
+func PrintJSON(s interface{}) {
+	jsonSring, _ := json.Marshal(s)
+	log.Println(string(jsonSring))
 }
